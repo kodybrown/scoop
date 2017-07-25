@@ -1,21 +1,31 @@
 {
-    "homepage": "https://github.com/alexkasko/openjdk-unofficial-builds",
-    "version": "1.7.0-u80",
+    "homepage": "https://github.com/ojdkbuild/ojdkbuild",
+    "version": "1.8.0.141-1",
     "license": "GPL2",
     "architecture": {
         "64bit": {
-            "url": "https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads/openjdk-1.7.0-u80-unofficial-windows-amd64-image.zip",
-            "hash": "1b835601f4ae689b9271040713b01d6bdd186c6a57bb4a7c47e1f7244d5ac928",
-            "extract_dir": "openjdk-1.7.0-u80-unofficial-windows-amd64-image"
-        },
-        "32bit": {
-            "url": "https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads/openjdk-1.7.0-u80-unofficial-windows-i586-image.zip",
-            "hash": "f3b715bc049b3c88bc47695278433c7dc4b2648e2b156f5e24346aecba343035",
-            "extract_dir": "openjdk-1.7.0-u80-unofficial-windows-i586-image"
+            "url": "https://github.com/ojdkbuild/ojdkbuild/releases/download/1.8.0.141-1/java-1.8.0-openjdk-1.8.0.141-1.b16.ojdkbuild.windows.x86_64.zip",
+            "hash": "2911ccece06500cc5bd37cb76028d4bd2b6261cb7f77e39404895e18d430d383",
+            "extract_dir": "java-1.8.0-openjdk-1.8.0.141-1.b16.ojdkbuild.windows.x86_64"
         }
     },
     "env_add_path": "bin",
     "env_set": {
         "JAVA_HOME": "$dir"
+    },
+    "checkver": {
+        "url": "https://raw.githubusercontent.com/ojdkbuild/ojdkbuild/master/README.md",
+        "re": "download/.*/java-(?<short>[\\d.]+)-openjdk-(?<version>[\\d.]+-[\\d]+)(?<tail>.*).x86_64.zip\\)"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/ojdkbuild/ojdkbuild/releases/download/$version/java-$matchShort-openjdk-$version$matchTail.x86_64.zip",
+                "extract_dir": "java-$matchShort-openjdk-$version$matchTail.x86_64"
+            }
+        },
+        "hash": {
+            "url": "$url.sha256"
+        }
     }
 }

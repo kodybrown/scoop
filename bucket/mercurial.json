@@ -1,21 +1,31 @@
 {
-        "homepage": "mercurial.selenic.com",
-        "version": "3.7.2",
-        "license": "http://www.gnu.org/licenses/gpl-2.0.txt",
-        "architecture": {
-                "64bit": {
-                        "url": "https://mercurial-scm.org/release/windows/Mercurial-3.7.2-x64.exe",
-                        "hash": "28935fa44a639b59067d5d987492cf7f7ee812914c6c458202c01d868e45da65"
-                },
-                "32bit": {
-                        "url": "https://mercurial-scm.org/release/windows/Mercurial-3.7.2.exe",
-                        "hash": "ff8628ad62a0290a16bffec3bae0f2fcf829fd26a2baf8b4a164698e42d667b3"
-                }
+    "homepage": "https://www.mercurial-scm.org/",
+    "version": "4.2.2",
+    "license": "https://www.gnu.org/licenses/gpl-2.0.txt",
+    "architecture": {
+        "64bit": {
+            "url": "https://www.mercurial-scm.org/release/windows/Mercurial-4.2.2-x64.exe",
+            "hash": "29781624f29a6483431b273287312986d6279bb1e5de44739261476b273a9484"
         },
-        "innosetup": true,
-        "bin": "hg.exe",
-        "checkver": {
-                "url": "http://mercurial.selenic.com/sources.js",
-                "re": "Mercurial ([0-9\\.]+) Inno Setup installer - x86 Windows - does not require admin rights"
+        "32bit": {
+            "url": "https://www.mercurial-scm.org/release/windows/Mercurial-4.2.2.exe",
+            "hash": "79b9cf8756893e574920816c5737d3d4b81148eb4d0bdbae764c813d621a00ab"
         }
+    },
+    "innosetup": true,
+    "bin": "hg.exe",
+    "checkver": {
+        "url": "https://www.mercurial-scm.org/wiki/WhatsNew",
+        "re": "Mercurial\\s+([\\d.]+)\\s+\\([0-9\\-]+\\)"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://www.mercurial-scm.org/release/windows/Mercurial-$version-x64.exe"
+            },
+            "32bit": {
+                "url": "https://www.mercurial-scm.org/release/windows/Mercurial-$version.exe"
+            }
+        }
+    }
 }

@@ -25,14 +25,14 @@ function dep_resolve($app, $arch, $resolved, $unresolved) {
     $query = $app
     $app, $bucket = app $query
     $null, $manifest, $null, $null = locate $app $bucket
-    if(!$manifest) { abort "couldn't find manifest for $query" }
+    if(!$manifest) { abort "Couldn't find manifest for '$query'." }
 
     $deps = @(install_deps $manifest $arch) + @(runtime_deps $manifest) | select -uniq
 
     foreach($dep in $deps) {
         if($resolved -notcontains $dep) {
             if($unresolved -contains $dep) {
-                abort "circular dependency detected: $app -> $dep"
+                abort "Circular dependency detected: '$app' -> '$dep'."
             }
             dep_resolve $dep $arch $resolved $unresolved
         }
@@ -48,7 +48,9 @@ function runtime_deps($manifest) {
 function install_deps($manifest, $arch) {
     $deps = @()
 
-    if(requires_7zip $manifest $arch) { $deps += "7zip" }
+    if((requires_7zip $manifest $arch) -and !(7zip_installed)) {
+        $deps += "7zip"
+    }
     if(requires_lessmsi $manifest $arch) { $deps += "lessmsi" }
     if($manifest.innosetup) { $deps += "innounp" }
 

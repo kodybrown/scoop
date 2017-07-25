@@ -1,17 +1,29 @@
 {
-    "homepage": "http://kotlinlang.org/",
-    "version": "0.9.66",
+    "homepage": "https://kotlinlang.org/",
+    "version": "1.1.3",
     "license": "Apache 2.0",
-    "url": "https://github.com/JetBrains/kotlin/releases/download/build-0.9.66/kotlin-compiler-0.9.66.zip",
-    "hash": "0226176b6fd026e2baed28e7528c64fcf000e9d678b7d57dcedd4a2a3a295252",
+    "url": "https://github.com/JetBrains/kotlin/releases/download/v1.1.3/kotlin-compiler-1.1.3.zip",
+    "hash": "bf5e6d8f1fa93a1fc27c56de3256cc94f26de483e8dd7fefc1b07758e2171dc9",
     "extract_dir": "kotlinc",
     "bin": [
+        "bin\\kotlin.bat",
         "bin\\kotlinc.bat",
         "bin\\kotlinc-js.bat",
         "bin\\kotlinc-jvm.bat"
     ],
-    "set_env": {
+    "env_set": {
         "KOTLIN_HOME": "$dir"
     },
-    "depends": "openjdk"
+    "suggest": {
+        "JDK": [
+            "extras/oraclejdk",
+            "openjdk"
+        ]
+    },
+    "checkver": {
+        "github": "https://github.com/JetBrains/kotlin"
+    },
+    "autoupdate": {
+        "url": "https://github.com/JetBrains/kotlin/releases/download/v$version/kotlin-compiler-$version.zip"
+    }
 }

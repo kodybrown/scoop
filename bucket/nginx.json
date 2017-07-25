@@ -1,9 +1,27 @@
 {
-    "homepage": "http://nginx.org",
-    "version": "1.9.6",
+    "homepage": "https://nginx.org",
+    "version": "1.13.3",
     "license": "BSD",
-    "url": "http://nginx.org/download/nginx-1.9.6.zip",
-    "hash": "728f857eed412afd136276828295d10b6345c6879e74c0bc8872bbd7a2a55652",
-    "extract_dir": "nginx-1.9.6",
-    "bin": "nginx.exe"
+    "url": "https://nginx.org/download/nginx-1.13.3.zip",
+    "hash": "c281d4b18fe5f2b596af024db17e5d745a9955516f7f1bb139bbf6d50590eb13",
+    "extract_dir": "nginx-1.13.3",
+    "bin": "nginx.exe",
+    "env_set": {
+        "NGINX_HOME": "$dir"
+    },
+    "persist": [
+        "conf",
+        "html",
+        "logs",
+        "temp"
+    ],
+    "notes": "To use the correct configuration run 'nginx -p \"$env:NGINX_HOME\"' or 'nginx -p \"%NGINX_HOME%\"'",
+    "checkver": {
+        "url": "https://nginx.org/en/CHANGES",
+        "re": "Changes with nginx ([\\d.]+)"
+    },
+    "autoupdate": {
+        "url": "https://nginx.org/download/nginx-$version.zip",
+        "extract_dir": "nginx-$version"
+    }
 }

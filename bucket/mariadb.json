@@ -1,17 +1,17 @@
 {
-    "homepage": "http://mariadb.org",
-    "version": "10.0.21",
+    "homepage": "https://mariadb.org",
+    "version": "10.2.7",
     "license": "GPL2",
     "architecture": {
         "64bit": {
-            "url": "https://downloads.mariadb.org/f/mariadb-10.0.21/winx64-packages/mariadb-10.0.21-winx64.zip",
-            "hash": "md5:12e7a7c121a48904172b311f8aefcb15",
-            "extract_dir": "mariadb-10.0.21-winx64"
+            "url": "https://downloads.mariadb.org/f/mariadb-10.2.7/winx64-packages/mariadb-10.2.7-winx64.zip",
+            "hash": "6dd9dc38017b34909c4f8f7aa54ef5f15e9acd77325a6146a00619cec5f8743d",
+            "extract_dir": "mariadb-10.2.7-winx64"
         },
         "32bit": {
-            "url": "https://downloads.mariadb.org/f/mariadb-10.0.21/win32-packages/mariadb-10.0.21-win32.zip",
-            "hash": "md5:e6d79eabaedcccbf53ac0ef4ca8b1cd7",
-            "extract_dir": "mariadb-10.0.21-win32"
+            "url": "https://downloads.mariadb.org/f/mariadb-10.2.7/win32-packages/mariadb-10.2.7-win32.zip",
+            "hash": "bb7dbf658f654d5c8ee8288dd234c79d34f4d33cdc2cc456279717e0615cddc9",
+            "extract_dir": "mariadb-10.2.7-win32"
         }
     },
     "bin": [
@@ -20,6 +20,7 @@
         "bin\\aria_ftdump.exe",
         "bin\\aria_pack.exe",
         "bin\\aria_read_log.exe",
+        "bin\\innochecksum.exe",
         "bin\\myisamchk.exe",
         "bin\\myisamlog.exe",
         "bin\\myisampack.exe",
@@ -45,5 +46,24 @@
         "bin\\mysql_upgrade_service.exe",
         "bin\\mysql_upgrade_wizard.exe",
         "bin\\my_print_defaults.exe"
-    ]
+    ],
+    "persist": [
+        "data"
+    ],
+    "checkver": {
+        "url": "https://downloads.mariadb.org/",
+        "re": "Download ([\\d.]+) Stable"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://downloads.mariadb.org/f/mariadb-$version/winx64-packages/mariadb-$version-winx64.zip",
+                "extract_dir": "mariadb-$version-winx64"
+            },
+            "32bit": {
+                "url": "https://downloads.mariadb.org/f/mariadb-$version/win32-packages/mariadb-$version-win32.zip",
+                "extract_dir": "mariadb-$version-win32"
+            }
+        }
+    }
 }

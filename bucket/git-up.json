@@ -1,12 +1,12 @@
 {
-    "version":  "1.3.0",
-    "license":  "https://github.com/msiemens/PyGitUp/blob/master/LICENCE",
-    "url":  "https://github.com/msiemens/PyGitUp/archive/v1.3.0.zip",
-    "hash":  "8b86e75728193912a6670e797bb9413ef21e9e1c16b4134a386aa1a3dbbe2e73",
-    "depends":  "python",
-    "extract_dir":  "PyGitUp-1.3.0",
-    "homepage":  "https://github.com/msiemens/PyGitUp",
-    "post_install":  "
+    "homepage": "https://github.com/msiemens/PyGitUp",
+    "license": "https://github.com/msiemens/PyGitUp/blob/master/LICENCE",
+    "version": "1.4.1",
+    "url": "https://github.com/msiemens/PyGitUp/archive/v1.4.1.zip",
+    "hash": "6e673c873d8d7fdb81537ae25ae57462f868e4a4348c9c5d12fb17d5f7a7a4a8",
+    "extract_dir": "PyGitUp-1.4.1",
+    "depends": "python",
+    "post_install": "
         pushd $dir
         try {
             scoop reset python
@@ -14,5 +14,10 @@
         }
         finally {
             popd
-        }"
+        }",
+    "checkver": "github",
+    "autoupdate": {
+        "url": "https://github.com/msiemens/PyGitUp/archive/v$version.zip",
+        "extract_dir": "PyGitUp-$version"
+    }
 }

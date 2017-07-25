@@ -1,15 +1,15 @@
 {
-    "homepage": "http://www.postgresql.org/",
-    "version": "9.3.0",
-    "license": "http://www.postgresql.org/about/licence/",
+    "homepage": "https://www.postgresql.org/",
+    "version": "9.6.3",
+    "license": "https://www.postgresql.org/about/licence/",
     "architecture": {
         "64bit": {
-            "url": "http://get.enterprisedb.com/postgresql/postgresql-9.3.0-1-windows-x64-binaries.zip",
-            "hash": "e6467ab923b355942ae0ff7dd4365e4e292c29f0d14f0c94874623779351f952"
+            "url": "https://get.enterprisedb.com/postgresql/postgresql-9.6.3-1-windows-x64-binaries.zip",
+            "hash": "18b23b5811ed94e5653c1dc311d49e2ce8e93b9d45e33f4318d4b744fb758ee3"
         },
         "32bit": {
-            "url": "http://get.enterprisedb.com/postgresql/postgresql-9.3.0-1-windows-binaries.zip",
-            "hash": "391c7963edbfc036c6c4cf256930323286b0ca2384cf2c2e0ae8ad7a47778553"
+            "url": "https://get.enterprisedb.com/postgresql/postgresql-9.6.3-1-windows-binaries.zip",
+            "hash": "675e360c78c96e498b3415258791ba2c8e3eb8d157f10b0f8189f20d0749417a"
         }
     },
     "extract_dir": "pgsql",
@@ -33,16 +33,23 @@
         "bin\\pg_dump.exe",
         "bin\\pg_dumpall.exe",
         "bin\\pg_isolation_regress.exe",
+        "bin\\pg_isready.exe",
         "bin\\pg_receivexlog.exe",
         "bin\\pg_regress.exe",
         "bin\\pg_regress_ecpg.exe",
         "bin\\pg_resetxlog.exe",
         "bin\\pg_restore.exe",
+        "bin\\pg_rewind.exe",
         "bin\\pg_standby.exe",
         "bin\\pg_test_fsync.exe",
         "bin\\pg_test_timing.exe",
         "bin\\pg_upgrade.exe",
-        "bin\\pgAdmin3.exe",
+        "bin\\pg_xlogdump.exe",
+        "pgAdmin 4\\bin\\pgAdmin4.exe",
+        [
+            "pgAdmin 4\\bin\\pgAdmin4.exe",
+            "pgadmin"
+        ],
         "bin\\pgbench.exe",
         "bin\\postgres.exe",
         "bin\\psql.exe",
@@ -51,5 +58,19 @@
         "bin\\vacuumdb.exe",
         "bin\\vacuumlo.exe",
         "bin\\zic.exe"
-    ]
+    ],
+    "checkver": {
+        "url": "https://www.enterprisedb.com/products-services-training/pgbindownload",
+        "re": "<b>Version ([\\d.]+)"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://get.enterprisedb.com/postgresql/postgresql-$version-1-windows-x64-binaries.zip"
+            },
+            "32bit": {
+                "url": "https://get.enterprisedb.com/postgresql/postgresql-$version-1-windows-binaries.zip"
+            }
+        }
+    }
 }

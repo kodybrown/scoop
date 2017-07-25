@@ -1,23 +1,36 @@
 {
-  "version": "1.15.0",
-  "license": "BSD",
-  "homepage": "https://www.dartlang.org/",
-  "extract_dir": "dart-sdk",
-  "env_add_path": [
-    "bin"
-  ],
-  "architecture": {
-    "64bit": {
-      "url": "https://storage.googleapis.com/dart-archive/channels/stable/release/1.15.0/sdk/dartsdk-windows-x64-release.zip",
-      "hash": "4a9538a8768f0adcc6989e62bf4dc9a760d35b1c0e96c1b7ca281d6a741bc0fe"
+    "version": "1.24.2",
+    "license": "BSD",
+    "homepage": "https://www.dartlang.org/",
+    "extract_dir": "dart-sdk",
+    "env_add_path": [
+        "bin"
+    ],
+    "architecture": {
+        "64bit": {
+            "url": "https://storage.googleapis.com/dart-archive/channels/stable/release/1.24.2/sdk/dartsdk-windows-x64-release.zip",
+            "hash": "513ce6d59caeed8444ccacf6021fa5e60e2b6c7a37dae80a693f6d90f14b5caa"
+        },
+        "32bit": {
+            "url": "https://storage.googleapis.com/dart-archive/channels/stable/release/1.24.2/sdk/dartsdk-windows-ia32-release.zip",
+            "hash": "26b73442d8a910431ac9efdc38421ab6e743a556d830536f86c0a77902f17e5d"
+        }
     },
-    "32bit": {
-      "url": "https://storage.googleapis.com/dart-archive/channels/stable/release/1.15.0/sdk/dartsdk-windows-ia32-release.zip",
-      "hash": "155e6e8a5c23b37027913b543e6a4a161735bed2b1ba3e20f9b1fbe75d80efbc"
+    "checkver": {
+        "url": "https://storage.googleapis.com/dart-archive/channels/stable/release/latest/VERSION",
+        "jp": "$.version"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://storage.googleapis.com/dart-archive/channels/stable/release/$version/sdk/dartsdk-windows-x64-release.zip"
+            },
+            "32bit": {
+                "url": "https://storage.googleapis.com/dart-archive/channels/stable/release/$version/sdk/dartsdk-windows-ia32-release.zip"
+            }
+        },
+        "hash": {
+            "url": "$url.sha256sum"
+        }
     }
-  },
-  "checkver": {
-    "url": "http://storage.googleapis.com/dart-archive/channels/stable/release/latest/VERSION",
-    "re": "\\s*\"version\"\\s*:\\s*(\\d+\\.\\d+\\.\\d+.*)"
-  }
 }

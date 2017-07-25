@@ -1,15 +1,15 @@
 {
-    "homepage": "http://miktex.org",
-    "version": "2.9.5857",
-    "license": "http://miktex.org/copying",
-    "url": "http://mirrors.ctan.org/systems/win32/miktex/setup/miktex-portable-2.9.5857.exe#/dl.7z",
-    "hash": "463acece6b0109baf8a53a4039e09739fb779c541f45c3567b028c46944728e6",
-    "bin": [
-        "miktex\\bin\\latex.exe",
-        "miktex\\bin\\pdflatex.exe"
-    ],
+    "homepage": "https://miktex.org",
+    "version": "2.9.6361",
+    "license": "https://miktex.org/copying",
+    "url": "https://ftp.uni-erlangen.de/ctan/systems/win32/miktex/setup/miktex-portable-2.9.6361.exe#/dl.7z",
+    "hash": "745a6fa16593cda188bda10dc0915d2343301b5b0e5ca5a4800cf02385ae48b3",
+    "env_add_path": "texmfs\\install\\miktex\\bin",
     "checkver": {
-        "url": "http://miktex.org/portable",
-        "re": "MiKTeX\\s+Portable\\s+(\\d+\\.\\d+\\.\\d+)"
+        "url": "https://miktex.org/portable",
+        "re": "miktex-portable-([\\d.]+).exe"
+    },
+    "autoupdate": {
+        "url": "https://ftp.uni-erlangen.de/ctan/systems/win32/miktex/setup/miktex-portable-$version.exe#/dl.7z"
     }
 }

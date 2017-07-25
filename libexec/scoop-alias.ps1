@@ -31,13 +31,13 @@ function init_alias_config {
 
 function add_alias($name, $command) {
   if(!$command) {
-    abort "can't create an empty alias"
+    abort "Can't create an empty alias."
   }
 
   # get current aliases from config
   $aliases = init_alias_config
   if($aliases.containskey($name)) {
-    abort "alias $name already exists"
+    abort "Alias $name already exists."
   }
 
   $alias_file = "scoop-$name"
@@ -49,7 +49,7 @@ function add_alias($name, $command) {
 # Summary: $description
 $command
 "@
-  $script | out-file "$shimdir\$alias_file.ps1" -encoding oem
+  $script | out-file "$shimdir\$alias_file.ps1" -encoding utf8
 
   # add alias to config
   $aliases += @{ $name = $alias_file }
@@ -57,25 +57,33 @@ $command
 }
 
 function rm_alias($name) {
-  $aliases = get_config $script:config_alias
+  $aliases = init_alias_config
+  if(!$name) {
+    abort "Which alias should be removed?"
+  }
 
   if($aliases.containskey($name)) {
-    "removing alias $name..."
+    "Removing alias $name..."
 
     rm_shim $aliases.get_item($name) (shimdir $false)
 
     $aliases.remove($name)
     set_config $script:config_alias $aliases
   }
-  else { abort "alias $name doesn't exist" }
+  else { abort "Alias $name doesn't exist." }
 }
 
 function list_aliases {
   $aliases = @{}
-  (get_config $script:config_alias).getenumerator() |% {
+
+  (init_alias_config).getenumerator() |% {
     $summary = summary (gc (command_path $_.name) -raw)
     if(!($summary)) { $summary = '' }
     $aliases.add("$($_.name) ", $summary)
+  }
+
+  if(!$aliases.count) {
+    warn "No aliases founds."
   }
 
   $aliases.getenumerator() | sort name | ft -hidetablehead -autosize -wrap

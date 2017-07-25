@@ -1,30 +1,22 @@
 {
-    "homepage": "http://www.apachelounge.com",
-    "version": "2.4.20",
+    "homepage": "https://www.apachelounge.com",
+    "version": "2.4.27",
     "license": "Apache 2.0",
     "architecture": {
         "64bit": {
-            "url": [
-                "https://www.apachelounge.com/download/VC14/binaries/httpd-2.4.20-win64-VC14.zip",
-                "https://raw.githubusercontent.com/MPLew-is/scoop-wamp/master/visual-c-redistributables/14/64-bit/vcruntime140.dll"
-            ],
-            "hash": [
-                "sha256:F154A422057F5A99AD3296E4527E1D47672DA87357F3FBFD8A644B8C3E5DEA24",
-                "sha256:acf65e565021f2017815fc5ec8a3145cf6c15e75c132cf23a378cc943e68327c"
-            ]
+            "url": "https://www.apachelounge.com/download/VC15/binaries/httpd-2.4.27-Win64-VC15.zip",
+            "hash": "6d827bf08bc73c45f2471794b75d7a70907a5274a4515285e5b62774331539fc"
         },
         "32bit": {
-            "url": [
-                "https://www.apachelounge.com/download/VC14/binaries/httpd-2.4.20-win32-VC14.zip",
-                "https://raw.githubusercontent.com/MPLew-is/scoop-wamp/master/visual-c-redistributables/14/32-bit/vcruntime140.dll"
-            ],
-            "hash": [
-                "sha256:5EBC9F372E049C6B604A5D8A3EF621B269FBF603D76385578E992CE2856AD748",
-                "sha256:b7c13f8519340257ba6ae3129afce961f137e394dde3e4e41971b9f912355f5e"
-            ]
+            "url": "https://www.apachelounge.com/download/VC15/binaries/httpd-2.4.27-Win32-VC15.zip",
+            "hash": "7ba98a25964b27bca693699f9b563b6de1c7b79525f76befcbec327331b8c6b7"
         }
     },
     "extract_dir": "Apache24",
+    "persist": [
+        "htdocs",
+        "conf"
+    ],
     "bin": [
         "bin\\ab.exe",
         "bin\\abs.exe",
@@ -38,16 +30,27 @@
         "bin\\rotatelogs.exe"
     ],
     "post_install": "
-#Copy needed DLL to bin subdirectory
-mv \"$dir\\vcruntime140.dll\" \"$dir\\bin\\vcruntime140.dll\"
-
 # set directory in httpd.conf
 $conf = \"$dir/conf/httpd.conf\"
 $root=(scoop which httpd | split-path -res -par | split-path -par) -replace '\\\\', '/';
 (gc $conf) | % { $_ -replace 'c:/Apache24', \"$root\" } | sc $conf
 ",
     "checkver": {
-        "url": "http://www.apachelounge.com/download/",
-        "re": "Apache ([0-9\\.]+) Win32"
+        "url": "https://www.apachelounge.com/download/",
+        "re": "Apache ([\\d.]+) Win32"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://www.apachelounge.com/download/VC15/binaries/httpd-$version-win64-VC15.zip"
+            },
+            "32bit": {
+                "url": "https://www.apachelounge.com/download/VC15/binaries/httpd-$version-win32-VC15.zip"
+            }
+        },
+        "hash": {
+            "url": "$url.txt",
+            "find": "SHA256-Checksum for: (?:$basename):\\s+([a-fA-F0-9]{64})"
+        }
     }
 }

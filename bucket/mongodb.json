@@ -1,36 +1,42 @@
 {
-    "homepage": "http://www.mongodb.org",
-    "version": "3.2.4",
-    "license": "http://www.mongodb.org/about/licensing/",
+    "homepage": "https://www.mongodb.org",
+    "version": "3.4.6",
+    "license": "https://www.mongodb.org/about/licensing/",
     "architecture": {
         "64bit": {
-            "url": "https://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-3.2.4.zip",
-            "hash": "f875b23d25a7cc23c8e2b469c8a75bb9cc892b00a77288230cb3991bcf336ede",
-            "extract_dir": "mongodb-win32-x86_64-2008plus-ssl-3.2.4"
-        },
-        "32bit": {
-            "url": "https://fastdl.mongodb.org/win32/mongodb-win32-i386-3.2.4.zip",
-            "hash": "ff6551648a4186b27f569bdc9f58cbd33079044e2352e5289cc7933c64b50099",
-            "extract_dir": "mongodb-win32-i386-3.2.4"
+            "url": "https://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-3.4.6-signed.msi",
+            "hash": "c02704728c40d50c66e3d3c3b1e4c27dc70cbe67722e28c7f537cba05f98309c"
         }
     },
     "bin": [
-        "bin\\bsondump.exe",
-        "bin\\mongo.exe",
-        "bin\\mongod.exe",
-        "bin\\mongodump.exe",
-        "bin\\mongoexport.exe",
-        "bin\\mongofiles.exe",
-        "bin\\mongoimport.exe",
-        "bin\\mongooplog.exe",
-        "bin\\mongoperf.exe",
-        "bin\\mongorestore.exe",
-        "bin\\mongos.exe",
-        "bin\\mongostat.exe",
-        "bin\\mongotop.exe"
+        "MongoDB\\Server\\3.4\\bin\\bsondump.exe",
+        "MongoDB\\Server\\3.4\\bin\\mongo.exe",
+        "MongoDB\\Server\\3.4\\bin\\mongod.exe",
+        "MongoDB\\Server\\3.4\\bin\\mongodump.exe",
+        "MongoDB\\Server\\3.4\\bin\\mongoexport.exe",
+        "MongoDB\\Server\\3.4\\bin\\mongofiles.exe",
+        "MongoDB\\Server\\3.4\\bin\\mongoimport.exe",
+        "MongoDB\\Server\\3.4\\bin\\mongooplog.exe",
+        "MongoDB\\Server\\3.4\\bin\\mongoperf.exe",
+        "MongoDB\\Server\\3.4\\bin\\mongorestore.exe",
+        "MongoDB\\Server\\3.4\\bin\\mongos.exe",
+        "MongoDB\\Server\\3.4\\bin\\mongostat.exe",
+        "MongoDB\\Server\\3.4\\bin\\mongotop.exe"
     ],
+    "post_install": "
+        # create initial directories
+        mkdir C:\\data
+        mkdir C:\\data\\db
+    ",
     "checkver": {
-        "url": "http://www.mongodb.org/downloads",
+        "url": "https://www.mongodb.com/download-center",
         "re": "Current Stable Release \\(([\\d.]+)\\)"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://fastdl.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-$version-signed.msi"
+            }
+        }
     }
 }

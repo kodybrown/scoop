@@ -1,14 +1,23 @@
 {
-    "homepage": "http://gnuwin32.sourceforge.net/packages/less.htm",
-    "version": "394",
-    "license": "Simplified BSD",
-    "url": [
-        "http://ufpr.dl.sourceforge.net/project/gnuwin32/less/394/less-394-bin.zip",
-        "http://ufpr.dl.sourceforge.net/project/gnuwin32/less/394/less-394-dep.zip"
+    "homepage": "http://www.greenwoodsoftware.com/less/",
+    "version": "487",
+    "license": "BSD",
+    "bin": [
+        "less.exe",
+        "lesskey.exe"
     ],
-    "hash": [
-        "md5:20f94bcc8a3347bd9a9ca32587d82eae",
-        "md5:539dce63be2b89a22af7b526d1022f72"
-    ],
-    "bin": "bin\\less.exe"
+    "checkver": {
+        "url": "https://www.guysalias.tk/misc/less/",
+        "re": "less-([\\d]+)-"
+    },
+    "extract_dir": "less-487-win32-static-x86.7z",
+    "hash": "1beffba4f61a8f928fb1abf77b67ce2a11ae7a64824399999f1741e5383edcb9",
+    "url": "https://www.guysalias.tk/misc/less/less-487-win32-static-x86.7z.7z",
+    "autoupdate": {
+        "extract_dir": "less-$version-win32-static-x86.7z",
+        "hash": {
+            "url": "https://www.guysalias.tk/misc/less/less-487-win32-static-x86.7z.7z.sha256"
+        },
+        "url": "https://www.guysalias.tk/misc/less/less-$version-win32-static-x86.7z.7z"
+    }
 }

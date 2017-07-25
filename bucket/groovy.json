@@ -1,10 +1,10 @@
 {
-    "homepage": "http://groovy.codehaus.org/",
-    "version": "2.4.5",
+    "homepage": "http://www.groovy-lang.org/",
+    "version": "2.4.12",
     "license": "Apache 2.0",
-    "url": "https://dl.bintray.com/groovy/maven/apache-groovy-binary-2.4.5.zip",
-    "hash": "87e8e9af1f718b84c9bca5a8c42425aadb9e97d8e4ad64e0c91f7c1454cd4caa",
-    "extract_dir": "groovy-2.4.5",
+    "url": "https://dl.bintray.com/groovy/maven/apache-groovy-binary-2.4.12.zip",
+    "hash": "93b9a19c760c2af846afa0e9c78692d70186cdde36e070e9806fe11b84a8a7b6",
+    "extract_dir": "groovy-2.4.12",
     "bin": [
         "bin\\grape.bat",
         "bin\\groovy.bat",
@@ -15,8 +15,24 @@
         "bin\\java2groovy.bat",
         "bin\\startGroovy.bat"
     ],
-    "set_env": {
+    "env_set": {
         "GROOVY_HOME": "$dir"
     },
-    "depends": "openjdk"
+    "suggest": {
+        "JDK": [
+            "extras/oraclejdk",
+            "openjdk"
+        ]
+    },
+    "checkver": {
+        "url": "http://www.groovy-lang.org/download.html",
+        "re": "apache-groovy-binary-([\\d.]+).zip"
+    },
+    "autoupdate": {
+        "url": "https://dl.bintray.com/groovy/maven/apache-groovy-binary-$version.zip",
+        "extract_dir": "groovy-$version",
+        "hash": {
+            "url": "$url.sha256"
+        }
+    }
 }

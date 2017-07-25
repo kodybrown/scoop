@@ -1,27 +1,41 @@
 {
-    "version":  "1.11.0",
-    "license":  "https://github.com/docker/docker/blob/master/LICENSE",
+    "version": "17.05.0-ce",
+    "license": "https://github.com/docker/docker/blob/master/LICENSE",
     "architecture": {
-      "64bit": {
-        "url":  "https://get.docker.com/builds/Windows/x86_64/docker-1.11.0.zip",
-        "hash": "d87ae31708b94b92e335702baed153fb80fed6c15f7161268ae61a939c448dfc"
-      },
-      "32bit": {
-        "url":  "https://get.docker.com/builds/Windows/i386/docker-1.11.0.zip",
-        "hash":  "3d1d6742f4ff41ac3f3bdbd6f112af3fce6faebc18b4726d5f41278600bcc574"
-      }
+        "64bit": {
+            "url": "https://get.docker.com/builds/Windows/x86_64/docker-17.05.0-ce.zip",
+            "hash": "cbb0b47b511023a98dd0c83d76c1f30b315b8381b85b67be355eca4748229031"
+        },
+        "32bit": {
+            "url": "https://get.docker.com/builds/Windows/i386/docker-17.05.0-ce.zip",
+            "hash": "99820746a362466700718d33ee727b9aea993b9c2e05fb2c53ed606e9f6780f1"
+        }
     },
-    "homepage":  "https://docker.com",
+    "homepage": "https://docker.com",
     "extract_dir": "docker",
     "bin": [
-      "docker.exe"
+        "docker.exe"
     ],
+    "checkver": {
+        "url": "https://github.com/docker/docker/releases/latest",
+        "re": "/releases/tag/(?:v)?([\\d\\w.-]+)"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://get.docker.com/builds/Windows/x86_64/docker-$version.zip"
+            },
+            "32bit": {
+                "url": "https://get.docker.com/builds/Windows/i386/docker-$version.zip"
+            }
+        }
+    },
     "notes": [
-      "This is the docker client only. Until the docker daemon can run natively",
-      "on Windows you will need a Virtual Machine such as Boot2Docker or",
-      "Docker Machine",
-      "",
-      "Boot2Docker: https://github.com/boot2docker/windows-installer/releases/",
-      "Docker Machine: http://docs.docker.com/machine/"
+        "This is the docker client only. Until the docker daemon can run natively",
+        "on Windows you will need a Virtual Machine such as Boot2Docker or",
+        "Docker Machine",
+        "",
+        "Boot2Docker: https://github.com/boot2docker/windows-installer/releases/",
+        "Docker Machine: http://docs.docker.com/machine/"
     ]
 }
