@@ -14,7 +14,6 @@ function install_psmodule($manifest, $dir, $global) {
     $module_name = $psmodule.name
     if(!$module_name) {
         abort "Invalid manifest: The 'name' property is missing from 'psmodule'."
-        return
     }
 
     $linkfrom = "$modulesdir\$module_name"
@@ -24,10 +23,10 @@ function install_psmodule($manifest, $dir, $global) {
 
     if(test-path $linkfrom) {
         warn "$(friendly_path $linkfrom) already exists. It will be replaced."
-        cmd /c rmdir $linkfrom
+        & "$env:COMSPEC" /c "rmdir $linkfrom"
     }
 
-    cmd /c mklink /j $linkfrom $dir | out-null
+    & "$env:COMSPEC" /c "mklink /j $linkfrom $dir" | out-null
 }
 
 function uninstall_psmodule($manifest, $dir, $global) {
@@ -41,12 +40,15 @@ function uninstall_psmodule($manifest, $dir, $global) {
     if(test-path $linkfrom) {
         write-host "Removing $(friendly_path $linkfrom)"
         $linkfrom = resolve-path $linkfrom
-        cmd /c rmdir $linkfrom
+        & "$env:COMSPEC" /c "rmdir $linkfrom"
     }
 }
 
 function ensure_in_psmodulepath($dir, $global) {
     $path = env 'psmodulepath' $global
+    if(!$global -and $null -eq $path) {
+        $path = "$env:USERPROFILE\Documents\WindowsPowerShell\Modules"
+    }
     $dir = fullpath $dir
     if($path -notmatch [regex]::escape($dir)) {
         write-output "Adding $(friendly_path $dir) to $(if($global){'global'}else{'your'}) PowerShell module path."

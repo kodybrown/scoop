@@ -2,7 +2,7 @@
 
 reset_aliases
 
-describe "add_alias" {
+describe "add_alias" -Tag 'Scoop' {
   mock shimdir { "TestDrive:\shim" }
   mock set_config { }
   mock get_config { @{} }
@@ -13,10 +13,10 @@ describe "add_alias" {
   context "alias doesn't exist" {
     it "creates a new alias" {
       $alias_file = "$shimdir\scoop-rm.ps1"
-      $alias_file | should not exist
+      $alias_file | should -not -exist
 
       add_alias "rm" '"hello, world!"'
-      iex $alias_file | should be "hello, world!"
+      Invoke-Expression $alias_file | should -be "hello, world!"
     }
   }
 
@@ -24,10 +24,10 @@ describe "add_alias" {
     it "does not change existing alias" {
       $alias_file = "$shimdir\scoop-rm.ps1"
       new-item $alias_file -type file
-      $alias_file | should exist
+      $alias_file | should -exist
 
       add_alias "rm" "test"
-      $alias_file | should contain ""
+      $alias_file | should -FileContentMatch ""
     }
   }
 }
@@ -45,11 +45,11 @@ describe "rm_alias" {
       $alias_file = "$shimdir\scoop-rm.ps1"
       add_alias "rm" '"hello, world!"'
 
-      $alias_file | should exist
+      $alias_file | should -exist
       mock get_config { @(@{"rm" = "scoop-rm"}) }
 
       rm_alias "rm"
-      $alias_file | should not exist
+      $alias_file | should -not -exist
     }
   }
 }

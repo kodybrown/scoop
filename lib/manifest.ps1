@@ -2,18 +2,20 @@
 . "$psscriptroot/autoupdate.ps1"
 
 function manifest_path($app, $bucket) {
-    "$(bucketdir $bucket)\$(sanitary_path $app).json"
+    fullpath "$(Find-BucketDirectory $bucket)\$(sanitary_path $app).json"
 }
 
 function parse_json($path) {
     if(!(test-path $path)) { return $null }
-    gc $path -raw -Encoding UTF8 | convertfrom-json -ea stop
+    Get-Content $path -raw -Encoding UTF8 | convertfrom-json -ea stop
 }
 
 function url_manifest($url) {
     $str = $null
     try {
-        $str = (new-object net.webclient).downloadstring($url)
+        $wc = New-Object Net.Webclient
+        $wc.Headers.Add('User-Agent', (Get-UserAgent))
+        $str = $wc.downloadstring($url)
     } catch [system.management.automation.methodinvocationexception] {
         warn "error: $($_.exception.innerexception.message)"
     } catch {
@@ -29,8 +31,13 @@ function manifest($app, $bucket, $url) {
 }
 
 function save_installed_manifest($app, $bucket, $dir, $url) {
-    if($url) { (new-object net.webclient).downloadstring($url) > "$dir\manifest.json" }
-    else { cp (manifest_path $app $bucket) "$dir\manifest.json" }
+    if($url) {
+        $wc = New-Object Net.Webclient
+        $wc.Headers.Add('User-Agent', (Get-UserAgent))
+        $wc.downloadstring($url) > "$dir\manifest.json"
+    } else {
+        Copy-Item (manifest_path $app $bucket) "$dir\manifest.json"
+    }
 }
 
 function installed_manifest($app, $version, $global) {
@@ -38,10 +45,11 @@ function installed_manifest($app, $version, $global) {
 }
 
 function save_install_info($info, $dir) {
-    $nulls = $info.keys | ? { $info[$_] -eq $null }
-    $nulls | % { $info.remove($_) } # strip null-valued
+    $nulls = $info.keys | Where-Object { $null -eq $info[$_] }
+    $nulls | ForEach-Object { $info.remove($_) } # strip null-valued
 
-    $info | convertto-json | out-file "$dir\install.json"
+    $file_content = $info | ConvertToPrettyJson
+    [System.IO.File]::WriteAllLines("$dir\install.json", $file_content)
 }
 
 function install_info($app, $version, $global) {
@@ -64,9 +72,12 @@ function arch_specific($prop, $manifest, $architecture) {
     if($manifest.$prop) { return $manifest.$prop }
 }
 
-function generate_user_manifest($app, $version) {
+function supports_architecture($manifest, $architecture) {
+    return -not [String]::IsNullOrEmpty((arch_specific 'url' $manifest $architecture))
+}
 
-    $null, $manifest, $bucket, $null = locate $app
+function generate_user_manifest($app, $bucket, $version) {
+    $null, $manifest, $bucket, $null = Find-Manifest $app $bucket
     if ("$($manifest.version)" -eq "$version") {
         return manifest_path $app $bucket
     }
@@ -79,7 +90,7 @@ function generate_user_manifest($app, $version) {
 
     ensure $(usermanifestsdir) | out-null
     try {
-        autoupdate $app "$(resolve-path $(usermanifestsdir))" $manifest $version $(New-Object HashTable)
+        autoupdate $app "$(resolve-path $(usermanifestsdir))" $manifest $version $(@{})
         return "$(resolve-path $(usermanifest $app))"
     } catch {
         write-host -f darkred "Could not install $app@$version"

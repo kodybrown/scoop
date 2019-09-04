@@ -1,50 +1,63 @@
-param($app, $dir)
+<#
+.SYNOPSIS
+    Search for application description on homepage.
+.PARAMETER App
+    Manifest name to search.
+    Placeholders are supported.
+.PARAMETER Dir
+    Where to search for manifest(s).
+#>
+param(
+    [String] $App = '*',
+    [Parameter(Mandatory = $true)]
+    [ValidateScript( {
+        if (!(Test-Path $_ -Type Container)) {
+            throw "$_ is not a directory!"
+        } else {
+            $true
+        }
+    })]
+    [String] $Dir
+)
 
-. "$psscriptroot\..\lib\core.ps1"
-. "$psscriptroot\..\lib\manifest.ps1"
-. "$psscriptroot\..\lib\description.ps1"
+. "$PSScriptRoot\..\lib\core.ps1"
+. "$PSScriptRoot\..\lib\manifest.ps1"
+. "$PSScriptRoot\..\lib\description.ps1"
 
-if(!$dir) {
-    $dir = "$psscriptroot\..\bucket"
+$Dir = Resolve-Path $Dir
+$Queue = @()
+
+Get-ChildItem $Dir "$App.json" | ForEach-Object {
+    $manifest = parse_json "$Dir\$($_.Name)"
+    $Queue += , @(($_.Name -replace '\.json$', ''), $manifest)
 }
-$dir = resolve-path $dir
 
-$search = "*"
-if($app) { $search = $app }
+$Queue | ForEach-Object {
+    $name, $manifest = $_
+    Write-Host "$name`: " -NoNewline
 
-# get apps to check
-$apps = @()
-gci $dir "$search.json" | % {
-    $json = parse_json "$dir\$_"
-    $apps += ,@(($_ -replace '\.json$', ''), $json)
-}
-
-$apps |% {
-    $app, $json = $_
-    write-host "$app`: " -nonewline
-
-    if(!$json.homepage) {
-        write-host "`nNo homepage set." -fore red
+    if (!$manifest.homepage) {
+        Write-Host "`nNo homepage set." -ForegroundColor Red
         return
     }
     # get description from homepage
     try {
-        $home_html = (new-object net.webclient).downloadstring($json.homepage)
+        $wc = New-Object Net.Webclient
+        $wc.Headers.Add('User-Agent', (Get-UserAgent))
+        $home_html = $wc.DownloadString($manifest.homepage)
     } catch {
-        write-host "`n$($_.exception.message)" -fore red
+        Write-Host "`n$($_.Exception.Message)" -ForegroundColor Red
         return
     }
 
-    $description, $descr_method = find_description $json.homepage $home_html
-    if(!$description) {
-        write-host -fore red "`nDescription not found ($($json.homepage))"
+    $description, $descr_method = find_description $manifest.homepage $home_html
+    if (!$description) {
+        Write-Host "`nDescription not found ($($manifest.homepage))" -ForegroundColor Red
         return
     }
 
     $description = clean_description $description
 
-    write-host "(found by $descr_method)"
-    write-host "  ""$description""" -fore green
-
+    Write-Host "(found by $descr_method)"
+    Write-Host "  ""$description""" -ForegroundColor Green
 }
-

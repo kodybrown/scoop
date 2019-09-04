@@ -22,26 +22,36 @@ function cacheinfo($file) {
     return new-object psobject -prop @{ app=$app; version=$version; url=$url; size=$size }
 }
 
+function show($app) {
+    $files = @(Get-ChildItem "$cachedir" | Where-Object { $_.name -match "^$app" })
+    $total_length = ($files | Measure-Object length -sum).sum -as [double]
+
+    $f_app  = @{ expression={"$($_.app) ($($_.version))" }}
+    $f_url  = @{ expression={$_.url};alignment='right'}
+    $f_size = @{ expression={$_.size}; alignment='right'}
+
+
+    $files | ForEach-Object { cacheinfo $_ } | Format-Table $f_size, $f_app, $f_url -auto -hide
+
+    "Total: $($files.length) $(pluralize $files.length 'file' 'files'), $(filesize $total_length)"
+}
+
 switch($cmd) {
     'rm' {
         if(!$app) { 'ERROR: <app> missing'; my_usage; exit 1 }
-        rm "$scoopdir\cache\$app#*"
+        Remove-Item "$cachedir\$app#*"
+        if(test-path("$cachedir\$app.txt")) {
+            Remove-Item "$cachedir\$app.txt"
+        }
     }
     'show' {
-        $files = @(gci "$scoopdir\cache" | ? { $_.name -match "^$app" })
-        $total_length = ($files | measure length -sum).sum -as [double]
-
-        $f_app  = @{ expression={"$($_.app) ($($_.version))" }}
-        $f_url  = @{ expression={$_.url};alignment='right'}
-        $f_size = @{ expression={$_.size}; alignment='right'}
-
-
-        $files | % { cacheinfo $_ } | ft $f_size, $f_app, $f_url -auto -hide
-
-        "Total: $($files.length) $(pluralize $files.length 'file' 'files'), $(filesize $total_length)"
+        show $app
+    }
+    '' {
+        show
     }
     default {
-        "cache '$cmd' not supported"; my_usage; exit 1
+        my_usage
     }
 }
 

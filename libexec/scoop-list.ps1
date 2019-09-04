@@ -9,26 +9,43 @@ param($query)
 . "$psscriptroot\..\lib\buckets.ps1"
 
 reset_aliases
+$def_arch = default_architecture
 
-$local = installed_apps $false | % { @{ name = $_ } }
-$global = installed_apps $true | % { @{ name = $_; global = $true } }
+$local = installed_apps $false | ForEach-Object { @{ name = $_ } }
+$global = installed_apps $true | ForEach-Object { @{ name = $_; global = $true } }
 
 $apps = @($local) + @($global)
 
 if($apps) {
-    echo "Installed apps$(if($query) { `" matching '$query'`"}):
-"
-    $apps | sort { $_.name } | ? { !$query -or ($_.name -match $query) } | % {
+    write-host "Installed apps$(if($query) { `" matching '$query'`"}): `n"
+    $apps | Sort-Object { $_.name } | Where-Object { !$query -or ($_.name -match $query) } | ForEach-Object {
         $app = $_.name
         $global = $_.global
         $ver = current_version $app $global
-        $global_display = $null; if($global) { $global_display = '*global*'}
 
-        "  $app ($ver) $global_display"
+        $install_info = install_info $app $ver $global
+        write-host "  $app " -NoNewline
+        write-host -f DarkCyan $ver -NoNewline
+
+        if($global) { write-host -f DarkGreen ' *global*' -NoNewline }
+
+        if (!$install_info) { Write-Host ' *failed*' -ForegroundColor DarkRed -NoNewline }
+        if ($install_info.hold) { Write-Host ' *hold*' -ForegroundColor DarkMagenta -NoNewline }
+
+        if ($install_info.bucket -and ($install_info.bucket -ne 'main')) {
+            write-host -f Yellow " [$($install_info.bucket)]" -NoNewline
+        } elseif ($install_info.url) {
+            write-host -f Yellow " [$($install_info.url)]" -NoNewline
+        }
+
+        if ($install_info.architecture -and $def_arch -ne $install_info.architecture) {
+            write-host -f DarkRed " {$($install_info.architecture)}" -NoNewline
+        }
+        write-host ''
     }
-    ""
+    write-host ''
     exit 0
 } else {
-    "There aren't any apps installed."
+    write-host "There aren't any apps installed."
     exit 1
 }
