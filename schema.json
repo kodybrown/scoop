@@ -95,6 +95,12 @@
                 "checkver": {
                     "$ref": "#/definitions/checkver"
                 },
+                "env_add_path": {
+                    "$ref": "#/definitions/stringOrArrayOfStrings"
+                },
+                "env_set": {
+                    "type": "object"
+                },
                 "extract_dir": {
                     "$ref": "#/definitions/stringOrArrayOfStrings"
                 },
@@ -254,6 +260,10 @@
                         },
                         "useragent": {
                             "type": "string"
+                        },
+                        "script": {
+                            "$ref": "#/definitions/stringOrArrayOfStrings",
+                            "description": "Custom PowerShell script to retrieve application version using more complex approach."
                         }
                     },
                     "type": "object"

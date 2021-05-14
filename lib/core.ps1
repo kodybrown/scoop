@@ -383,7 +383,7 @@ function run($exe, $arg, $msg, $continue_exit_codes) {
 }
 
 function Invoke-ExternalCommand {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = "Default")]
     [OutputType([Boolean])]
     param (
         [Parameter(Mandatory = $true,
@@ -396,6 +396,7 @@ function Invoke-ExternalCommand {
         [Alias("Args")]
         [String[]]
         $ArgumentList,
+        [Parameter(ParameterSetName = "UseShellExecute")]
         [Switch]
         $RunAs,
         [Alias("Msg")]
@@ -404,6 +405,7 @@ function Invoke-ExternalCommand {
         [Alias("cec")]
         [Hashtable]
         $ContinueExitCodes,
+        [Parameter(ParameterSetName = "Default")]
         [Alias("Log")]
         [String]
         $LogPath
@@ -420,9 +422,11 @@ function Invoke-ExternalCommand {
             $Process.StartInfo.Arguments += " /lwe `"$LogPath`""
         } else {
             $Process.StartInfo.RedirectStandardOutput = $true
+            $Process.StartInfo.RedirectStandardError = $true
         }
     }
     if ($RunAs) {
+        $Process.StartInfo.UseShellExecute = $true
         $Process.StartInfo.Verb = 'RunAs'
     }
     try {
@@ -584,7 +588,7 @@ function shim($path, $global, $name, $arg) {
 
     if($path -match '\.(exe|com)$') {
         # for programs with no awareness of any shell
-        Copy-Item "$(versiondir 'scoop' 'current')\supporting\shimexe\bin\shim.exe" "$shim.exe" -force
+        Copy-Item (get_shim_path) "$shim.exe" -force
         write-output "path = $resolved_path" | out-file "$shim.shim" -encoding utf8
         if($arg) {
             write-output "args = $arg" | out-file "$shim.shim" -encoding utf8 -append
@@ -612,6 +616,18 @@ powershell -noprofile -ex unrestricted `"& '$resolved_path' $arg %args%;exit `$l
         "@java -jar `"$resolved_path`" $arg %*" | out-file "$shim.cmd" -encoding ascii
         "#!/bin/sh`njava -jar `"$resolved_path`" $arg `"$@`"" | out-file $shim -encoding ascii
     }
+}
+
+function get_shim_path() {
+    $shim_path = "$(versiondir 'scoop' 'current')\supporting\shimexe\bin\shim.exe"
+    $shim_version = get_config 'shim' 'default'
+    switch ($shim_version) {
+        '71' { $shim_path = "$(versiondir 'scoop' 'current')\supporting\shims\71\shim.exe"; Break }
+        'kiennq' { $shim_path = "$(versiondir 'scoop' 'current')\supporting\shims\kiennq\shim.exe"; Break }
+        'default' { Break }
+        default { warn "Unknown shim version: '$shim_version'" }
+    }
+    return $shim_path
 }
 
 function search_in_path($target) {
@@ -687,13 +703,25 @@ function strip_path($orig_path, $dir) {
     return ($stripped -ne $orig_path), $stripped
 }
 
-function remove_from_path($dir,$global) {
+function add_first_in_path($dir, $global) {
+    $dir = fullpath $dir
+
+    # future sessions
+    $null, $currpath = strip_path (env 'path' $global) $dir
+    env 'path' $global "$dir;$currpath"
+
+    # this session
+    $null, $env:PATH = strip_path $env:PATH $dir
+    $env:PATH = "$dir;$env:PATH"
+}
+
+function remove_from_path($dir, $global) {
     $dir = fullpath $dir
 
     # future sessions
     $was_in_path, $newpath = strip_path (env 'path' $global) $dir
     if($was_in_path) {
-        write-output "Removing $(friendly_path $dir) from your path."
+        Write-Output "Removing $(friendly_path $dir) from your path."
         env 'path' $global $newpath
     }
 
@@ -894,6 +922,7 @@ function handle_special_urls($url)
         $Body = @{
             projectUri      = $Matches.name;
             fileName        = $Matches.filename;
+            source          = 'CF';
             isLatestVersion = $true
         }
         if ((Invoke-RestMethod -Uri $url) -match '"p":"(?<pid>[a-f0-9]{24}).*?"r":"(?<rid>[a-f0-9]{24})') {
